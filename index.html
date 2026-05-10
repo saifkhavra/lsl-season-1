@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -761,7 +762,7 @@ object-fit:contain;
 
 object-position:center center;
 
-opacity:0.18;
+opacity:0.62;
 
 filter:
 blur(1px)
@@ -795,19 +796,22 @@ position:absolute;
 
 inset:0;
 
+z-index:1;
+
 pointer-events:none;
 
 background:
-radial-gradient(
-circle at top,
-rgba(255,255,255,0.08),
-transparent 35%
+
+linear-gradient(
+to bottom,
+rgba(0,0,0,0.15),
+rgba(0,0,0,0.35)
 ),
 
 radial-gradient(
-circle at bottom,
-rgba(0,191,255,0.08),
-transparent 35%
+circle at center,
+transparent 20%,
+rgba(0,0,0,0.25) 100%
 );
 
 }
@@ -927,8 +931,8 @@ border-radius:34px;
 background:
 linear-gradient(
 145deg,
-rgba(5,8,18,0.88),
-rgba(2,3,10,0.92)
+rgba(0,0,0,0.12),
+rgba(0,0,0,0.18)
 );
 
 backdrop-filter:blur(18px);
@@ -993,26 +997,27 @@ left:50%;
 
 transform:translate(-50%,-50%);
 
-width:95%;
+width:135%;
 
-height:95%;
+height:135%;
 
 object-fit:contain;
 
 object-position:center center;
 
-opacity:0.22;
+opacity:0.62;
+
+mix-blend-mode:screen;
 
 filter:
-brightness(0.75)
-contrast(1.05)
-blur(0.5px);
+brightness(1)
+contrast(1.12);
 
 pointer-events:none;
 
 z-index:0;
 
-animation:stadiumFloat 10s ease-in-out infinite alternate;
+animation:stadiumFloat 12s ease-in-out infinite alternate;
 
 }
 
@@ -1026,33 +1031,21 @@ z-index:2;
 }
 
 
-@keyframes stadiumZoom{
-
-
 @keyframes stadiumFloat{
 
 0%{
-transform:scale(1) translateY(0px);
+transform:
+translate(-50%,-50%)
+scale(1);
 }
 
 100%{
-transform:scale(1.03) translateY(-10px);
+transform:
+translate(-50%,-50%)
+scale(1.03);
 }
 
 }
-
-0%{
-transform:scale(1);
-filter:brightness(0.92);
-}
-
-100%{
-transform:scale(1.03);
-filter:brightness(1.06);
-}
-
-}
-
 
 .team-overlay{
 
@@ -1068,66 +1061,96 @@ background:
 
 linear-gradient(
 to bottom,
-rgba(0,0,0,0.25),
-rgba(0,0,0,0.65)
+rgba(0,0,0,0.10),
+rgba(0,0,0,0.25)
 ),
 
 radial-gradient(
 circle at center,
-transparent 20%,
-rgba(0,0,0,0.45) 100%
+rgba(255,140,0,0.03),
+rgba(0,0,0,0.15)
 );
 
 }
-
 .team-header-section{
 
-margin-top:30px;
+position:relative;
 
-text-align:center;
+z-index:3;
+
+width:100%;
+
+padding-right:80px;
+
+margin-top:40px;
+
+display:flex;
+
+flex-direction:column;
+
+align-items:flex-end;
+
+text-align:right;
 
 }
 
 .team-main-title{
 
-font-size:54px;
+font-size:72px;
 
-font-weight:900;
+font-weight:800;
 
 text-transform:uppercase;
 
-letter-spacing:2px;
+letter-spacing:4px;
 
-background:
-linear-gradient(
-90deg,
-#FFD700,
-#ffffff,
-#00E5FF,
-#FFD700
-);
+font-family:
+'Impact',
+'Arial Black',
+sans-serif;
 
-background-size:300% auto;
+color:
+rgba(255,255,255,0.82);
+opacity:0.88;
 
--webkit-background-clip:text;
-
-color:transparent;
-
-animation:titleShine 5s linear infinite;
+transform:skew(-6deg);
 
 text-shadow:
-0 0 20px rgba(255,215,0,0.35);
+
+0 0 4px rgba(255,255,255,0.35),
+
+0 0 10px rgba(255,140,0,0.45),
+
+0 0 22px rgba(255,90,0,0.28);
+
+mix-blend-mode:screen;
 
 }
 
-@keyframes titleShine{
+@keyframes fireTitle{
 
 0%{
-background-position:-200% center;
+
+transform:scale(1);
+
+text-shadow:
+0 0 5px #fff,
+0 0 12px #ff9900,
+0 0 28px #ff6600,
+0 0 50px rgba(255,80,0,0.8);
+
 }
 
 100%{
-background-position:200% center;
+
+transform:scale(1.03);
+
+text-shadow:
+0 0 8px #fff,
+0 0 18px #ffaa00,
+0 0 38px #ff4400,
+0 0 80px rgba(255,80,0,1);
+
 }
 
 }
@@ -1136,7 +1159,7 @@ background-position:200% center;
 
 display:flex;
 
-justify-content:center;
+Justify-content:flex-end;
 
 gap:18px;
 
@@ -1170,139 +1193,176 @@ box-shadow:
 
 .team-players-list{
 
-margin-top:40px;
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fill,minmax(250px,1fr));
-
-gap:22px;
-
-}
-
-.team-player-card{
-
 position:relative;
 
-padding:22px;
+z-index:2;
 
-border-radius:24px;
+width:100%;
 
-overflow:hidden;
+margin-top:45px;
+
+padding:30px;
+
+border-radius:28px;
 
 background:
-linear-gradient(
-145deg,
-rgba(255,255,255,0.06),
-rgba(255,255,255,0.02)
-);
+rgba(0,0,0,0.22);
 
-backdrop-filter:blur(14px);
+backdrop-filter:blur(12px);
 
-border:1px solid rgba(255,255,255,0.08);
+-webkit-backdrop-filter:blur(12px);
 
-transition:0.35s ease;
+border:1px solid rgba(255,255,255,0.04);
+
+display:flex;
+
+flex-direction:column;
+
+gap:14px;
 
 box-shadow:
-0 0 25px rgba(0,0,0,0.45);
+0 0 25px rgba(0,0,0,0.22);
 
 }
 
-.team-player-card::before{
+.team-player-line{
 
-content:"";
+width:100%;
 
-position:absolute;
+padding:18px 24px;
 
-inset:-2px;
+border-radius:22px;
 
-border-radius:24px;
-
+/* MUCH MORE TRANSPARENT */
 background:
-linear-gradient(
-130deg,
-rgba(255,140,0,0.7),
-rgba(255,0,90,0.4),
-rgba(0,191,255,0.25),
-rgba(255,140,0,0.7)
-);
+rgba(255,255,255,0.015);
 
-background-size:300% 300%;
+backdrop-filter:
+blur(5px)
+saturate(140%);
 
-animation:borderMove 6s linear infinite;
+-webkit-backdrop-filter:
+blur(5px)
+saturate(140%);
 
-filter:blur(14px);
+border:
+1px solid rgba(255,255,255,0.025);
 
-opacity:0.65;
-
-z-index:-1;
-
-}
-
-.team-player-card:hover{
-
-transform:
-translateY(-10px)
-scale(1.03);
-
-box-shadow:
-0 0 25px rgba(255,140,0,0.25),
-0 0 50px rgba(255,0,90,0.15);
-
-}
-
-.team-player-card h4{
-
-font-size:22px;
-
-font-weight:900;
-
-margin-bottom:16px;
-
-text-transform:uppercase;
-
-letter-spacing:1px;
-
-background:
-linear-gradient(
-90deg,
-#FFD700,
-#ffffff,
-#ff7b00
-);
-
-background-size:300% auto;
-
--webkit-background-clip:text;
-
-color:transparent;
-
-animation:fireText 4s linear infinite;
-
-}
-
-@keyframes fireText{
-
-0%{
-background-position:-200% center;
-}
-
-100%{
-background-position:200% center;
-}
-
-}
-
-.team-player-card div{
-
-margin-top:8px;
-
-font-size:15px;
+font-size:20px;
 
 font-weight:700;
 
-color:rgba(255,255,255,0.88);
+letter-spacing:0.5px;
+
+color:white;
+
+transition:all 0.35s ease;
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+/* REMOVE DARKNESS */
+box-shadow:
+
+0 0 8px rgba(255,140,0,0.02),
+
+inset 0 0 6px rgba(255,255,255,0.01);
+
+}
+
+.team-player-line:hover{
+
+transform:translateX(6px);
+
+background:
+rgba(255,255,255,0.05);
+
+box-shadow:
+0 0 16px rgba(255,140,0,0.08);
+
+}
+
+.player-name{
+
+font-size:18px;
+
+font-weight:600;
+
+font-family:
+'Trebuchet MS',
+'Segoe UI',
+sans-serif;
+
+letter-spacing:0.5px;
+
+text-transform:uppercase;
+
+color:white;
+
+text-shadow:
+0 0 4px rgba(255,255,255,0.12);
+
+}
+
+.player-role{
+
+color:#eeeeee;
+
+font-weight:500;
+
+margin-left:12px;
+
+font-size:16px;
+
+opacity:0.9;
+
+}
+
+.player-location{
+
+color:#bdbdbd;
+
+font-size:15px;
+
+margin-left:10px;
+
+opacity:0.75;
+
+}
+
+.team-players-list{
+
+position:relative;
+
+z-index:2;
+
+width:100%;
+
+margin-top:45px;
+
+padding:30px;
+
+border-radius:28px;
+
+/* FULL TRANSPARENCY */
+background:
+rgba(255,255,255,0.01);
+
+backdrop-filter:blur(3px);
+
+border:1px solid rgba(255,255,255,0.015);
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+/* REMOVE DARK SHADOW */
+box-shadow:none;
 
 }
 
@@ -1906,22 +1966,22 @@ if(team.players.length > 0){
 playersHTML =
 team.players.map(player => `
 
-<div class="team-player-card">
+<div class="team-player-line">
 
-<h4>
+<div>
+
+<span class="player-name">
 🏏 ${player.name}
-</h4>
+</span>
 
-<div>
-🎯 ${player.role}
-</div>
+<span class="player-role">
+— ${player.role}
+</span>
 
-<div>
-📍 ${player.location}
-</div>
+<span class="player-location">
+(${player.location})
+</span>
 
-<div>
-💰 ₹${player.soldPrice}
 </div>
 
 </div>
