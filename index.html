@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>LSL Auction Control System V3</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Segoe UI',sans-serif;
+color:white;
+overflow-x:hidden;
+min-height:100vh;
+position:relative;
+background:#050816;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:url("images/background.jpg") center center/cover no-repeat;
+opacity:0.18;
+z-index:-2;
+}
+
+body::after{
+content:"";
+position:fixed;
+inset:0;
+background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.75));
+z-index:-1;
+}
+
+header{
+padding:20px;
+text-align:center;
+}
+
+.header-content{
+position:relative;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+padding:20px;
+border-radius:24px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,0.1);
+overflow:hidden;
+}
+
+.header-content::before{
+content:"";
+position:absolute;
+inset:-2px;
+border-radius:24px;
+background:
+linear-gradient(
+130deg,
+gold,
+#00e5ff,
+#ff00cc,
+gold
+);
+background-size:300% 300%;
+animation:borderMove 8s linear infinite;
+filter:blur(16px);
+z-index:-1;
+}
+
+@keyframes borderMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.logo{
+height:130px;
+width:auto;
+animation:logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow{
+0%{
+filter:
+drop-shadow(0 0 10px gold)
+drop-shadow(0 0 25px rgba(255,215,0,0.5));
+}
+100%{
+filter:
+drop-shadow(0 0 25px gold)
+drop-shadow(0 0 50px rgba(255,215,0,0.8));
+}
+}
+
+.title{
+flex:1;
+font-size:42px;
+font-weight:900;
+text-transform:uppercase;
+letter-spacing:2px;
+animation:titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow{
+0%{
+text-shadow:
+0 0 8px white,
+0 0 18px #00e5ff,
+0 0 35px #ff00cc;
+}
+100%{
+text-shadow:
+0 0 15px white,
+0 0 35px #00e5ff,
+0 0 60px #ff00cc;
+}
+}
+
+.organised{
+margin-top:12px;
+font-size:18px;
+font-weight:900;
+background:linear-gradient(90deg,gold,white,gold);
+background-size:200% auto;
+-webkit-background-clip:text;
+color:transparent;
+animation:shine 3s linear infinite;
+}
+
+@keyframes shine{
+0%{background-position:-200% center;}
+100%{background-position:200% center;}
+}
+
+
+/* =========================
+   PREMIUM ORGANISED TEXT
+========================= */
+
+.organised-wrapper{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:18px;
+
+margin-top:18px;
+
+padding:0 20px;
+
+}
+
+.organised-line{
+
+width:120px;
+
+height:2px;
+
+border-radius:20px;
+
+background:
+linear-gradient(
+90deg,
+transparent,
+gold,
+white,
+gold,
+transparent
+);
+
+background-size:200% auto;
+
+animation:lineGlow 4s linear infinite;
+
+box-shadow:
+0 0 12px gold,
+0 0 30px rgba(255,215,0,0.4);
+
+}
+
+@keyframes lineGlow{
+
+0%{
+background-position:-200% center;
+}
+
+100%{
+background-position:200% center;
+}
+}
+
+.organised{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+line-height:1.1;
+
+animation:organisedFloat 4s ease-in-out infinite;
+
+}
+
+@keyframes organisedFloat{
+
+0%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(-3px);
+}
+
+100%{
+transform:translateY(0px);
+}
+}
+
+.org-small{
+
+font-size:16px;
+
+font-weight:700;
+
+letter-spacing:4px;
+
+text-transform:uppercase;
+
+color:#ffffff;
+
+opacity:0.8;
+
+margin-bottom:4px;
+
+text-shadow:
+0 0 10px rgba(255,255,255,0.5);
+
+}
+
+.org-main{
+
+font-size:30px;
+
+font-weight:900;
+
+letter-spacing:2px;
+
+text-transform:uppercase;
+
+background:
+linear-gradient(
+90deg,
+#FFD700,
+#ffffff,
+#00E5FF,
+#FFD700
+);
+
+background-size:300% auto;
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+animation:orgShine 5s linear infinite;
+
+text-shadow:
+0 0 10px rgba(255,215,0,0.5),
+0 0 30px rgba(0,191,255,0.25);
+
+}
+
+@keyframes orgShine{
+
+0%{
+background-position:-200% center;
+}
+
+100%{
+background-position:200% center;
+}
+}
+
+.live-bar{
+margin-top:15px;
+display:inline-block;
+padding:10px 20px;
+border-radius:14px;
+background:rgba(255,0,0,0.15);
+border:1px solid rgba(255,255,255,0.1);
+font-weight:900;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 10px rgba(255,0,0,0.3);}
+50%{box-shadow:0 0 25px rgba(255,0,0,0.6);}
+100%{box-shadow:0 0 10px rgba(255,0,0,0.3);}
+}
+
+.top-nav{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:15px;
+margin:25px 0;
+}
+
+.top-nav button{
+padding:14px 26px;
+border:none;
+border-radius:14px;
+font-size:15px;
+font-weight:900;
+cursor:pointer;
+background:linear-gradient(145deg,gold,orange);
+transition:0.3s;
+}
+
+.top-nav button:hover{
+transform:scale(1.06);
+}
+
+.controls{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+padding:20px;
+}
+
+input,select{
+padding:12px 16px;
+border:none;
+border-radius:12px;
+font-size:14px;
+font-weight:800;
+outline:none;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:24px;
+padding:25px;
+}
+
+.card{
+position:relative;
+overflow:hidden;
+border-radius:24px;
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(15px);
+transition:0.35s;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+animation:floatCard 5s ease-in-out infinite;
+}
+
+.card:hover{
+transform:translateY(-10px) scale(1.03);
+}
+
+@keyframes floatCard{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-6px);}
+100%{transform:translateY(0px);}
+}
+
+.card::before{
+content:"";
+position:absolute;
+inset:0;
+padding:2px;
+border-radius:24px;
+background:
+linear-gradient(
+130deg,
+gold,
+#ff00cc,
+#00e5ff,
+gold
+);
+background-size:300% 300%;
+animation:borderMove 6s linear infinite;
+-webkit-mask:
+linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+-webkit-mask-composite:xor;
+pointer-events:none;
+}
+
+.card img{
+width:100%;
+height:280px;
+object-fit:contain;
+padding:10px;
+}
+
+.card-content{
+padding:16px;
+text-align:center;
+}
+
+.card h3{
+display:inline-block;
+padding:8px 14px;
+border-radius:12px;
+font-size:15px;
+background:white;
+color:black;
+margin-bottom:10px;
+}
+
+.badge{
+display:inline-block;
+margin:5px;
+padding:7px 12px;
+border-radius:12px;
+font-size:12px;
+font-weight:900;
+background:white;
+color:black;
+}
+
+.sold-badge{
+background:linear-gradient(145deg,limegreen,green) !important;
+color:white !important;
+box-shadow:0 0 15px limegreen;
+}
+
+.price-badge{
+background:linear-gradient(145deg,gold,orange) !important;
+color:black !important;
+box-shadow:0 0 15px gold;
+}
+
+.teams-dashboard{
+width:95%;
+margin:30px auto;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
+
+.team-box{
+position:relative;
+overflow:hidden;
+padding:20px;
+border-radius:22px;
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(12px);
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+}
+
+.team-box img{
+width:110px;
+height:110px;
+object-fit:contain;
+display:block;
+margin:0 auto 15px auto;
+animation:teamGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes teamGlow{
+0%{
+filter:
+drop-shadow(0 0 10px gold)
+drop-shadow(0 0 25px rgba(255,215,0,0.5));
+}
+100%{
+filter:
+drop-shadow(0 0 20px gold)
+drop-shadow(0 0 45px rgba(255,215,0,0.9));
+}
+}
+
+/* =========================
+   TEAM TABS
+========================= */
+
+.team-tabs-wrapper{
+
+width:95%;
+
+margin:30px auto;
+
+}
+
+.team-tabs{
+
+display:flex;
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+gap:20px;
+
+margin-bottom:30px;
+
+}
+
+.team-tab{
+
+position:relative;
+
+width:180px;
+
+height:220px;
+
+border-radius:28px;
+
+cursor:pointer;
+
+transition:0.4s ease;
+
+overflow:hidden;
+
+text-align:center;
+
+background:
+linear-gradient(
+180deg,
+rgba(255,255,255,0.12),
+rgba(255,255,255,0.03)
+);
+
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:flex-end;
+
+align-items:center;
+
+padding-bottom:18px;
+
+box-shadow:
+0 0 25px rgba(0,0,0,0.45);
+
+}
+
+.team-tab::before{
+
+content:"";
+
+position:absolute;
+
+inset:-2px;
+
+background:
+linear-gradient(
+130deg,
+gold,
+#00E5FF,
+#FF00CC,
+gold
+);
+
+background-size:300% 300%;
+
+animation:borderFlow 5s linear infinite;
+
+filter:blur(12px);
+
+z-index:-1;
+
+}
+
+.team-tab:hover{
+
+transform:
+translateY(-8px)
+scale(1.05);
+
+box-shadow:
+0 0 25px rgba(255,215,0,0.45),
+0 0 55px rgba(0,191,255,0.25);
+
+}
+
+.team-tab.active{
+
+transform:scale(1.08);
+
+background:rgba(255,215,0,0.12);
+
+box-shadow:
+0 0 35px rgba(255,215,0,0.65);
+
+}
+
+.team-tab img{
+
+position:absolute;
+
+inset:0;
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+opacity:0.92;
+
+transition:0.4s ease;
+
+filter:
+drop-shadow(0 0 18px rgba(255,215,0,0.65));
+
+}
+
+.team-tab::after{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+background:
+linear-gradient(
+to top,
+rgba(0,0,0,0.85),
+rgba(0,0,0,0.15),
+transparent
+);
+
+z-index:1;
+
+}
+
+@keyframes teamPulse{
+
+0%{
+transform:scale(1);
+}
+
+100%{
+transform:scale(1.08);
+}
+}
+
+.team-tab h3{
+
+position:relative;
+
+z-index:2;
+
+font-size:18px;
+
+font-weight:900;
+
+letter-spacing:1px;
+
+text-transform:uppercase;
+
+color:white;
+
+padding:10px 18px;
+
+border-radius:14px;
+
+background:
+rgba(0,0,0,0.45);
+
+backdrop-filter:blur(10px);
+
+text-shadow:
+0 0 12px rgba(255,255,255,0.4);
+
+}
+
+/* =========================
+   TEAM DISPLAY
+========================= */
+
+.team-display{
+
+position:relative;
+
+padding:30px;
+
+border-radius:28px;
+
+background:
+linear-gradient(
+145deg,
+rgba(255,255,255,0.08),
+rgba(255,255,255,0.03)
+);
+
+backdrop-filter:blur(16px);
+
+overflow:hidden;
+
+min-height:650px;
+
+}
+
+.team-display::before{
+
+content:"";
+
+position:absolute;
+
+inset:-2px;
+
+background:
+linear-gradient(
+130deg,
+gold,
+#00E5FF,
+#FF00CC,
+gold
+);
+
+background-size:300% 300%;
+
+animation:borderFlow 6s linear infinite;
+
+filter:blur(15px);
+
+z-index:-1;
+
+}
+
+.team-squad-image{
+
+position:absolute;
+
+inset:0;
+
+width:100%;
+
+height:100%;
+
+object-fit:contain;
+
+object-position:center center;
+
+opacity:0.18;
+
+filter:
+blur(1px)
+brightness(0.7)
+contrast(1.1);
+
+z-index:0;
+
+pointer-events:none;
+
+animation:stadiumFloat 12s ease-in-out infinite alternate;
+
+}
+
+@keyframes stadiumGlow{
+
+0%{
+transform:scale(1);
+filter:brightness(1);
+}
+
+100%{
+transform:scale(1.01);
+filter:brightness(1.08);
+}
+}
+
+.team-overlay{
+
+position:absolute;
+
+inset:0;
+
+pointer-events:none;
+
+background:
+radial-gradient(
+circle at top,
+rgba(255,255,255,0.08),
+transparent 35%
+),
+
+radial-gradient(
+circle at bottom,
+rgba(0,191,255,0.08),
+transparent 35%
+);
+
+}
+
+.team-players-list{
+
+margin-top:30px;
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fill,minmax(220px,1fr));
+
+gap:16px;
+
+}
+
+.team-player-card{
+
+padding:16px;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.06);
+
+backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+transition:0.3s ease;
+
+}
+
+.team-player-card:hover{
+
+transform:translateY(-5px);
+
+box-shadow:
+0 0 20px rgba(255,215,0,0.25),
+0 0 40px rgba(0,191,255,0.15);
+
+}
+
+.team-player-card h4{
+
+margin-bottom:10px;
+
+font-size:16px;
+
+color:gold;
+
+}
+
+.team-box h2{
+text-align:center;
+color:gold;
+margin-bottom:15px;
+}
+
+.team-stat{
+margin-top:10px;
+padding:12px;
+border-radius:12px;
+background:rgba(255,255,255,0.06);
+}
+
+#idleOverlay{
+position:fixed;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+background:black;
+z-index:999999;
+}
+
+#idleVideo{
+width:100%;
+height:100%;
+object-fit:contain;
+}
+
+@media(max-width:768px){
+
+.header-content{
+flex-direction:column;
+}
+
+.title{
+font-size:24px;
+text-align:center;
+}
+
+.logo{
+height:90px;
+}
+
+.grid{
+grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+}
+
+}
+
+/* =========================
+   PREMIUM TEAM UI
+========================= */
+
+.team-display{
+
+position:relative;
+
+padding:40px;
+
+border-radius:34px;
+
+background:
+linear-gradient(
+145deg,
+rgba(5,8,18,0.88),
+rgba(2,3,10,0.92)
+);
+
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.05);
+
+overflow:hidden;
+
+min-height:900px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:flex-start;
+
+align-items:center;
+
+box-shadow:
+0 0 45px rgba(0,0,0,0.7);
+
+}
+
+.team-display::before{
+
+content:"";
+
+position:absolute;
+
+inset:-2px;
+
+border-radius:34px;
+
+background:
+linear-gradient(
+130deg,
+rgba(255,215,0,0.6),
+rgba(0,191,255,0.25),
+rgba(255,0,140,0.2),
+rgba(255,215,0,0.6)
+);
+
+background-size:300% 300%;
+
+animation:borderMove 8s linear infinite;
+
+filter:blur(16px);
+
+opacity:0.55;
+
+z-index:-1;
+
+}
+
+.team-squad-image{
+
+position:absolute;
+
+top:50%;
+
+left:50%;
+
+transform:translate(-50%,-50%);
+
+width:95%;
+
+height:95%;
+
+object-fit:contain;
+
+object-position:center center;
+
+opacity:0.22;
+
+filter:
+brightness(0.75)
+contrast(1.05)
+blur(0.5px);
+
+pointer-events:none;
+
+z-index:0;
+
+animation:stadiumFloat 10s ease-in-out infinite alternate;
+
+}
+
+.team-header-section,
+.team-players-list{
+
+position:relative;
+
+z-index:2;
+
+}
+
+
+@keyframes stadiumZoom{
+
+
+@keyframes stadiumFloat{
+
+0%{
+transform:scale(1) translateY(0px);
+}
+
+100%{
+transform:scale(1.03) translateY(-10px);
+}
+
+}
+
+0%{
+transform:scale(1);
+filter:brightness(0.92);
+}
+
+100%{
+transform:scale(1.03);
+filter:brightness(1.06);
+}
+
+}
+
+
+.team-overlay{
+
+position:absolute;
+
+inset:0;
+
+z-index:1;
+
+pointer-events:none;
+
+background:
+
+linear-gradient(
+to bottom,
+rgba(0,0,0,0.25),
+rgba(0,0,0,0.65)
+),
+
+radial-gradient(
+circle at center,
+transparent 20%,
+rgba(0,0,0,0.45) 100%
+);
+
+}
+
+.team-header-section{
+
+margin-top:30px;
+
+text-align:center;
+
+}
+
+.team-main-title{
+
+font-size:54px;
+
+font-weight:900;
+
+text-transform:uppercase;
+
+letter-spacing:2px;
+
+background:
+linear-gradient(
+90deg,
+#FFD700,
+#ffffff,
+#00E5FF,
+#FFD700
+);
+
+background-size:300% auto;
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+animation:titleShine 5s linear infinite;
+
+text-shadow:
+0 0 20px rgba(255,215,0,0.35);
+
+}
+
+@keyframes titleShine{
+
+0%{
+background-position:-200% center;
+}
+
+100%{
+background-position:200% center;
+}
+
+}
+
+.team-stats-row{
+
+display:flex;
+
+justify-content:center;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+margin-top:20px;
+
+}
+
+.team-stat-pill{
+
+padding:12px 20px;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.06);
+
+backdrop-filter:blur(10px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+font-size:15px;
+
+font-weight:900;
+
+box-shadow:
+0 0 18px rgba(0,0,0,0.35);
+
+}
+
+.team-players-list{
+
+margin-top:40px;
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fill,minmax(250px,1fr));
+
+gap:22px;
+
+}
+
+.team-player-card{
+
+position:relative;
+
+padding:22px;
+
+border-radius:24px;
+
+overflow:hidden;
+
+background:
+linear-gradient(
+145deg,
+rgba(255,255,255,0.06),
+rgba(255,255,255,0.02)
+);
+
+backdrop-filter:blur(14px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+transition:0.35s ease;
+
+box-shadow:
+0 0 25px rgba(0,0,0,0.45);
+
+}
+
+.team-player-card::before{
+
+content:"";
+
+position:absolute;
+
+inset:-2px;
+
+border-radius:24px;
+
+background:
+linear-gradient(
+130deg,
+rgba(255,140,0,0.7),
+rgba(255,0,90,0.4),
+rgba(0,191,255,0.25),
+rgba(255,140,0,0.7)
+);
+
+background-size:300% 300%;
+
+animation:borderMove 6s linear infinite;
+
+filter:blur(14px);
+
+opacity:0.65;
+
+z-index:-1;
+
+}
+
+.team-player-card:hover{
+
+transform:
+translateY(-10px)
+scale(1.03);
+
+box-shadow:
+0 0 25px rgba(255,140,0,0.25),
+0 0 50px rgba(255,0,90,0.15);
+
+}
+
+.team-player-card h4{
+
+font-size:22px;
+
+font-weight:900;
+
+margin-bottom:16px;
+
+text-transform:uppercase;
+
+letter-spacing:1px;
+
+background:
+linear-gradient(
+90deg,
+#FFD700,
+#ffffff,
+#ff7b00
+);
+
+background-size:300% auto;
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+animation:fireText 4s linear infinite;
+
+}
+
+@keyframes fireText{
+
+0%{
+background-position:-200% center;
+}
+
+100%{
+background-position:200% center;
+}
+
+}
+
+.team-player-card div{
+
+margin-top:8px;
+
+font-size:15px;
+
+font-weight:700;
+
+color:rgba(255,255,255,0.88);
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="header-content">
+
+<img src="images/lsl-logo.png" class="logo">
+
+<div class="title">
+LSL Season 1 - Players List For Auction
+</div>
+
+<img src="images/community-logo.png" class="logo">
+
+</div>
+
+<div class="organised-wrapper">
+
+<div class="organised-line"></div>
+
+<div class="organised">
+
+<span class="org-small">
+Organised by
+</span>
+
+<span class="org-main">
+Mumbai Langha Jamat
+</span>
+
+</div>
+
+<div class="organised-line"></div>
+
+</div>
+
+<div class="live-bar">
+🔴 LIVE AUCTION
+</div>
+
+</header>
+
+<div class="top-nav">
+
+<button onclick="showPage('playersPage')">
+Players
+</button>
+
+<button onclick="showPage('dashboardPage')">
+Dashboard
+</button>
+
+<button onclick="showPage('teamsPage')">
+Teams
+</button>
+
+</div>
+
+<div id="playersPage">
+
+<div class="controls">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search player..."
+>
+
+<select id="roleFilter">
+
+<option value="">
+All Roles
+</option>
+
+<option>
+Batsman
+</option>
+
+<option>
+Bowler
+</option>
+
+<option>
+All Rounder
+</option>
+
+</select>
+
+<select id="locationFilter">
+
+<option value="">
+All Locations
+</option>
+
+<option>
+Mulund
+</option>
+
+<option>
+Malad
+</option>
+
+<option>
+Kutch
+</option>
+
+</select>
+
+</div>
+
+<div class="grid" id="playerGrid"></div>
+
+</div>
+
+<div id="dashboardPage" style="display:none;">
+<div class="teams-dashboard" id="teamsDashboard"></div>
+</div>
+
+<div id="teamsPage" style="display:none;">
+
+<div class="team-tabs-wrapper">
+
+<div class="team-tabs" id="teamTabs"></div>
+
+<div class="team-display" id="teamDisplay">
+
+<div class="team-overlay"></div>
+
+</div>
+
+</div>
+
+</div>
+<div id="idleOverlay">
+<video id="idleVideo" autoplay muted playsinline></video>
+</div>
+
+<script>
+
+let players = [];
+
+const teams = [
+
+{
+name:"Langha Tigers",
+logo:"images/tigers.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Lions",
+logo:"images/lions.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Bulls",
+logo:"images/bulls.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Eagles",
+logo:"images/eagles.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Panthers",
+logo:"images/panthers.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Unicorns",
+logo:"images/unicorns.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Sharks",
+logo:"images/sharks.png",
+purse:100000,
+used:0,
+players:[]
+},
+
+{
+name:"Langha Wolves",
+logo:"images/wolves.png",
+purse:100000,
+used:0,
+players:[]
+}
+
+];
+
+function showPage(pageId){
+
+[
+"playersPage",
+"dashboardPage",
+"teamsPage"
+].forEach(id => {
+
+document.getElementById(id).style.display = "none";
+
+});
+
+document.getElementById(pageId).style.display = "block";
+
+}
+
+fetch("players.csv")
+
+.then(response => response.text())
+
+.then(data => {
+
+const rows =
+data.trim().split("\n").slice(1);
+
+players = rows.map(row => {
+
+const cols =
+row.split(",").map(col =>
+col.replace(/^"|"$/g,"").trim()
+);
+
+return {
+
+name: cols[0],
+age: cols[1],
+location: cols[2],
+role: cols[3],
+batting: cols[4],
+bowling: cols[5],
+category: cols[6],
+img: cols[7],
+
+sold:false,
+soldTo:"",
+soldPrice:0
+
+};
+
+});
+
+loadSoldPlayers();
+
+});
+
+function loadSoldPlayers(){
+
+/* RESET TEAMS */
+teams.forEach(team => {
+
+team.players = [];
+
+team.used = 0;
+
+team.purse = 100000;
+
+});
+
+/* RESET PLAYER SOLD STATUS */
+players.forEach(player => {
+
+player.sold = false;
+
+player.soldTo = "";
+
+player.soldPrice = 0;
+
+});
+
+fetch("sold_players.csv")
+
+.then(response => response.text())
+
+.then(data => {
+
+/* FIX WINDOWS CSV */
+data = data.replace(/\r/g, "");
+
+const rows = data.trim().split("\n").slice(1);
+
+rows.forEach(row => {
+
+const cols = row.split(",").map(c =>
+c.replace(/^"|"$/g, "").trim()
+);
+
+/* CSV STRUCTURE */
+
+const playerName = cols[0]?.trim();
+
+const auctionStatus = cols[6]?.trim().toLowerCase();
+
+const soldPrice = parseInt(cols[7]) || 0;
+
+const teamName = cols[8]?.trim();
+
+/* ONLY SOLD PLAYERS */
+
+if(auctionStatus !== "sold"){
+return;
+}
+
+/* FIND PLAYER */
+
+const player = players.find(
+p =>
+p.name.trim().toLowerCase()
+===
+playerName.trim().toLowerCase()
+);
+
+/* FIND TEAM */
+
+const team = teams.find(
+t =>
+t.name.trim().toLowerCase()
+===
+teamName.trim().toLowerCase()
+);
+
+/* DEBUG */
+
+console.log(
+"PLAYER:",
+playerName,
+"| TEAM:",
+teamName,
+"| FOUND:",
+!!player,
+!!team
+);
+
+/* UPDATE */
+
+if(player && team){
+
+player.sold = true;
+
+player.soldTo = team.name;
+
+player.soldPrice = soldPrice;
+
+/* PREVENT DUPLICATES */
+
+const alreadyExists =
+team.players.some(
+tp => tp.name === player.name
+);
+
+if(!alreadyExists){
+
+team.players.push(player);
+
+team.used += soldPrice;
+
+team.purse -= soldPrice;
+
+}
+
+}
+
+});
+
+/* REFRESH UI */
+
+renderPlayers(players);
+
+loadDashboard();
+
+loadTeamsPage();
+
+initializeTeamTabs();
+
+})
+
+.catch(error => {
+
+console.error(
+"Error loading sold_players.csv:",
+error
+);
+
+});
+
+}
+
+function renderPlayers(list){
+
+const grid =
+document.getElementById("playerGrid");
+
+grid.innerHTML = "";
+
+list.forEach(player => {
+
+const card =
+document.createElement("div");
+
+card.className = "card";
+
+card.innerHTML = `
+
+<img
+src="${player.img}"
+onerror="this.src='https://via.placeholder.com/250x300?text=No+Image'"
+>
+
+<div class="card-content">
+
+<h3>${player.name}</h3>
+
+<div class="badge">
+🏏 ${player.role}
+</div>
+
+<div class="badge">
+📍 ${player.location}
+</div>
+
+<div class="badge">
+🎂 ${player.age}
+</div>
+
+<div class="badge">
+⭐ ${player.category}
+</div>
+
+${
+player.sold
+
+?
+
+`
+
+<div class="badge sold-badge">
+🔥 SOLD → ${player.soldTo}
+</div>
+
+<div class="badge price-badge">
+💰 ₹${player.soldPrice}
+</div>
+
+`
+
+:
+
+""
+
+}
+
+</div>
+
+`;
+
+grid.appendChild(card);
+
+});
+
+}
+
+function loadDashboard(){
+
+const dashboard =
+document.getElementById("teamsDashboard");
+
+dashboard.innerHTML = "";
+
+teams.forEach(team => {
+
+dashboard.innerHTML += `
+
+<div class="team-box">
+
+<img
+src="${team.logo}"
+onerror="this.style.display='none'"
+>
+
+<h2>${team.name}</h2>
+
+<div class="team-stat">
+💰 Remaining Purse: ₹${team.purse}
+</div>
+
+<div class="team-stat">
+💸 Used Purse: ₹${team.used}
+</div>
+
+<div class="team-stat">
+👥 Players: ${team.players.length}
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+function loadTeamsPage(){
+
+/* OLD TEAMS PAGE REMOVED */
+
+/* DO NOTHING HERE */
+
+/* NEW TEAM TABS HANDLE EVERYTHING */
+
+}
+
+function initializeTeamTabs(){
+
+const tabsContainer =
+document.getElementById("teamTabs");
+
+const display =
+document.getElementById("teamDisplay");
+
+if(!tabsContainer || !display){
+return;
+}
+
+/* CLEAR */
+tabsContainer.innerHTML = "";
+display.innerHTML = "";
+
+/* LOOP */
+teams.forEach((team,index)=>{
+
+const tab =
+document.createElement("div");
+
+tab.className = "team-tab";
+
+if(index === 0){
+tab.classList.add("active");
+}
+
+/* IMAGE */
+const imageName =
+team.name
+.toLowerCase()
+.replace("langha ","");
+
+const squadImage =
+`images/squads/${imageName}.jpg`;
+
+/* TAB HTML */
+tab.innerHTML = `
+
+<img
+src="${team.logo}"
+onerror="this.src='images/background.jpg'"
+>
+
+<h3>${team.name}</h3>
+
+`;
+
+/* CLICK */
+tab.onclick = function(){
+
+document
+.querySelectorAll(".team-tab")
+.forEach(t => {
+t.classList.remove("active");
+});
+
+tab.classList.add("active");
+
+/* PLAYERS HTML */
+let playersHTML = "";
+
+if(team.players.length > 0){
+
+playersHTML =
+team.players.map(player => `
+
+<div class="team-player-card">
+
+<h4>
+🏏 ${player.name}
+</h4>
+
+<div>
+🎯 ${player.role}
+</div>
+
+<div>
+📍 ${player.location}
+</div>
+
+<div>
+💰 ₹${player.soldPrice}
+</div>
+
+</div>
+
+`).join("");
+
+}else{
+
+playersHTML = `
+
+<div style="
+padding:40px;
+font-size:24px;
+font-weight:900;
+text-align:center;
+width:100%;
+">
+No Players Yet
+</div>
+
+`;
+
+}
+
+/* DISPLAY HTML */
+display.innerHTML = `
+
+<img
+src="${squadImage}"
+class="team-squad-image"
+onerror="this.src='images/background.jpg'"
+>
+
+<div class="team-overlay"></div>
+
+<div class="team-header-section">
+
+<h1 class="team-main-title">
+${team.name}
+</h1>
+
+<div class="team-stats-row">
+
+<div class="team-stat-pill">
+👥 Squad Size: ${team.players.length}
+</div>
+
+<div class="team-stat-pill">
+💰 Remaining Purse: ₹${team.purse}
+</div>
+
+<div class="team-stat-pill">
+🏏 Team Players: ${team.players.length}
+</div>
+
+</div>
+
+</div>
+
+<div class="team-players-list">
+
+${playersHTML}
+
+</div>
+
+`;
+
+};
+
+/* APPEND */
+tabsContainer.appendChild(tab);
+
+/* AUTO OPEN FIRST */
+if(index === 0){
+
+setTimeout(() => {
+
+tab.click();
+
+},100);
+
+}
+
+});
+
+}
+
+function filterPlayers(){
+
+const search =
+document.getElementById("searchInput")
+.value
+.toLowerCase();
+
+const role =
+document.getElementById("roleFilter")
+.value;
+
+const location =
+document.getElementById("locationFilter")
+.value;
+
+const filtered =
+players.filter(player => {
+
+return (
+
+player.name.toLowerCase().includes(search)
+
+&&
+
+(
+role === ""
+||
+player.role === role
+)
+
+&&
+
+(
+location === ""
+||
+player.location === location
+)
+
+);
+
+});
+
+renderPlayers(filtered);
+
+}
+
+document
+.getElementById("searchInput")
+.addEventListener("input",filterPlayers);
+
+document
+.getElementById("roleFilter")
+.addEventListener("change",filterPlayers);
+
+document
+.getElementById("locationFilter")
+.addEventListener("change",filterPlayers);
+
+/* IDLE VIDEO */
+
+let idleTimer;
+
+const idleOverlay =
+document.getElementById("idleOverlay");
+
+const idleVideo =
+document.getElementById("idleVideo");
+
+const idleVideos = [
+
+"videos/team1.mp4",
+"videos/team2.mp4"
+
+];
+
+let currentVideo = 0;
+
+function startIdleMode(){
+
+idleOverlay.style.display = "flex";
+
+playNextVideo();
+
+}
+
+function stopIdleMode(){
+
+idleOverlay.style.display = "none";
+
+idleVideo.pause();
+
+idleVideo.currentTime = 0;
+
+}
+
+function playNextVideo(){
+
+idleVideo.src =
+idleVideos[currentVideo];
+
+idleVideo.play();
+
+currentVideo =
+(currentVideo + 1)
+%
+idleVideos.length;
+
+idleVideo.onended = () => {
+
+setTimeout(() => {
+
+playNextVideo();
+
+},3000);
+
+};
+
+}
+
+function resetIdleTimer(){
+
+clearTimeout(idleTimer);
+
+stopIdleMode();
+
+idleTimer =
+setTimeout(startIdleMode,30000);
+
+}
+
+[
+"mousemove",
+"mousedown",
+"keypress",
+"touchstart",
+"scroll"
+].forEach(event => {
+
+document.addEventListener(
+event,
+resetIdleTimer
+);
+
+});
+
+resetIdleTimer();
+
+</script>
+
+</body>
+</html>
